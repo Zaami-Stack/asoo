@@ -1,0 +1,375 @@
+/* ============ LOVE OS XP - mini-games, notepad, photo viewer ============ */
+
+/* ------- LOVE.EXE main menu ------- */
+.menu-wrap { padding: 10px; display: flex; flex-direction: column; gap: 8px; height: 100%; overflow: auto; }
+
+.menu-header {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 15px;
+  color: #c00050;
+  text-align: center;
+  border: 2px solid #e8959c;
+  background: #fff0f4;
+  padding: 10px;
+  box-shadow: 2px 2px 0 #e8959c;
+}
+
+.menu-sub { font-size: 11px; color: #5a3a3a; text-align: center; }
+
+.menu-stats {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px;
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+}
+
+.piece {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #c08080;
+  background: #f5e1e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: #c00050;
+}
+.piece.got { background: #ffd0d8; border-color: #c00050; }
+.piece.got::after { content: ""; }
+
+.app-btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+
+.app-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+  padding: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.app-btn:hover { background: #fff7f9; }
+.app-btn:active { border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); }
+.app-btn .app-name { font-weight: bold; font-size: 11px; display: flex; align-items: center; gap: 5px; }
+.app-btn .app-desc { font-size: 10px; color: #555; }
+.app-btn.locked { opacity: 0.55; cursor: default; background: #eee; }
+.app-btn.locked:hover { background: #eee; }
+.app-btn.locked .lock-note { color: #a00; font-size: 10px; font-weight: bold; }
+
+.menu-footer { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: #666; }
+
+/* ------- Heart catcher ------- */
+.game-pad {
+  background: linear-gradient(#aee3ff 0%, #d9f4ff 55%, #bff0c8 56%, #9fe3ab 100%);
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  position: relative;
+  display: block;
+  touch-action: none;
+}
+.hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--xp-title);
+  color: #fff;
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 11px;
+  text-shadow: 1px 1px 0 #0d3c9e;
+}
+.hud .lives { letter-spacing: 2px; }
+.game-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(10, 20, 60, 0.45);
+  color: #fff;
+  text-align: center;
+}
+.game-msg .big { font-family: 'Press Start 2P', monospace; font-size: 14px; color: #ffd; text-shadow: 2px 2px 0 #000; }
+
+/* ------- Memory game ------- */
+.memo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.mcard { position: relative; height: 84px; perspective: 600px; cursor: pointer; border: none; background: none; padding: 0; }
+.mcard .inner {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.25s;
+}
+.mcard.open .inner { transform: rotateY(180deg); }
+.mcard.matched { cursor: default; }
+.mcard .face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+}
+.mcard .face.back {
+  background: repeating-linear-gradient(45deg, #c00050 0 6px, #e02868 6px 12px);
+  color: rgba(255,255,255,0.4);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 12px;
+}
+.mcard .face.front { transform: rotateY(180deg); background: #fff; border-color: #b0b0b0 var(--bevel-dark) var(--bevel-dark) #b0b0b0; }
+.mcard.open .face.back { display: none; }
+
+/* ------- Quiz ------- */
+.quiz-wrap { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.quiz-q {
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  padding: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+.quiz-answers { display: flex; flex-direction: column; gap: 6px; }
+.quiz-answer {
+  text-align: left;
+  padding: 7px 10px;
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+  cursor: pointer;
+  font-size: 11px;
+}
+.quiz-answer:hover { background: #fff7f9; }
+.quiz-answer:active { border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); }
+.quiz-answer.correct { background: #d0f0c0; border-color: #2a7a2a #2a7a2a #2a7a2a #2a7a2a; }
+.quiz-answer.wrong { background: #f8d0d0; border-color: #a02020 #a02020 #a02020 #a02020; }
+.quiz-answer:disabled { cursor: default; }
+.quiz-fb { font-size: 11px; min-height: 16px; font-weight: bold; }
+.quiz-progress { font-size: 10px; color: #555; text-align: right; }
+
+/* ------- Memories / notepad ------- */
+.file-list { display: flex; flex-direction: column; gap: 2px; padding: 8px; }
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  background: transparent;
+  text-align: left;
+  font-size: 11px;
+  color: #000;
+  width: 100%;
+}
+.file-row:hover { background: #316ac5; color: #fff; }
+.file-row .f-icon { font-size: 16px; }
+
+.notepad {
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  padding: 10px;
+  font-family: 'Tahoma', sans-serif;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow: auto;
+  height: 100%;
+}
+.notepad .cursor { display: inline-block; width: 6px; height: 14px; background: #000; vertical-align: -2px; animation: blink 0.8s steps(1) infinite; }
+
+/* ------- Photo viewer ------- */
+.photo-frame {
+  background: #102040;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+}
+.photo-frame canvas { image-rendering: pixelated; display: block; }
+.photo-meta {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #333;
+}
+.photo-caption { font-weight: bold; }
+.photo-nav { display: flex; justify-content: center; gap: 8px; padding: 6px; }
+
+/* ------- Final challenge ------- */
+.final-wrap { padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.big-heart { font-size: 96px; line-height: 1; filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.25)); }
+.big-heart.complete { animation: heartbeat 0.9s ease-in-out infinite; }
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  12% { transform: scale(1.12); }
+  24% { transform: scale(1); }
+  36% { transform: scale(1.14); }
+  55% { transform: scale(1); }
+}
+.pieces-row { display: flex; gap: 8px; }
+.sys-status { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.sys-row { display: flex; align-items: center; gap: 8px; font-weight: bold; font-size: 11px; }
+.sys-row .sys-label { width: 90px; }
+.sys-row .sys-bar { flex: 1; height: 14px; background: #ccc; border: 2px solid; border-color: #808080 #fff #fff #808080; }
+.sys-row .sys-bar .fill { height: 100%; width: 0%; background: #2a4bd7; transition: width 1s ease; }
+.sys-row .sys-pct { width: 44px; text-align: right; }
+
+/* ------- Ending overlay ------- */
+.end-screen {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, #7a1230 0%, #3a0a18 70%, #1e050c 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+.end-panel {
+  width: 560px;
+  background: #fff3f5;
+  border: 3px solid #c00050;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.4), inset 3px 3px 0 #fff;
+  padding: 24px;
+  color: #4a1020;
+}
+.end-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 18px;
+  color: #c00050;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.end-msg { font-size: 13px; line-height: 1.8; white-space: pre-wrap; }
+.end-msg .cursor { display: inline-block; width: 6px; height: 14px; background: #c00050; vertical-align: -2px; animation: blink 0.8s steps(1) infinite; }
+.end-buttons { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+.heart-fall {
+  position: absolute;
+  top: -40px;
+  z-index: 2500;
+  pointer-events: none;
+  animation: fall linear forwards;
+  font-size: 18px;
+}
+@keyframes fall { from { transform: translateY(0); } to { transform: translateY(680px); } }
+
+/* ------- Music player ------- */
+.music-box { padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.music-note { font-size: 48px; }
+.music-art { background: #101010; width: 220px; padding: 10px; text-align: center; border: 2px solid; border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); }
+.music-art .track { color: #fff; font-size: 12px; }
+.music-art .track-sub { color: #8a8a8a; font-size: 10px; }
+.music-controls { display: flex; gap: 8px; }
+
+/* ------- Music player track list ------- */
+.music-list { display: flex; flex-direction: column; gap: 4px; width: 100%; max-height: 180px; overflow: auto; }
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  text-align: left;
+  width: 100%;
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+}
+.track-item:hover { background: #fff7f9; }
+.track-item.on { background: #ffe9f0; border-color: #c00050; }
+.track-item .track-num { color: #c00050; font-weight: bold; }
+.track-item .track-name { flex: 1; }
+.track-item .track-artist { font-size: 10px; color: #777; }
+
+/* ------- Arcade: whack-a-love ------- */
+.play-area { position: relative; margin: 8px; border: 2px solid; border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark); }
+.play-area .game-msg { width: 100%; height: 100%; }
+.whack-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background: repeating-linear-gradient(45deg, #e79a52 0 14px, #e08840 14px 28px);
+}
+.whack-cell {
+  height: 74px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #5b3a1e, #3a2412 70%);
+  border: 6px solid #2c1a0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  cursor: pointer;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.5);
+}
+.whack-cell.up { background: radial-gradient(circle at 35% 30%, #f9d9b0, #b8813f 70%); }
+.whack-cell.bad { border-color: #7a7d88; }
+.whack-cell.good { border-color: #c00050; }
+
+/* ------- Arcade: asoo says ------- */
+.simon-pad {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  padding: 12px;
+  background: #101014;
+}
+.simon-cell {
+  height: 120px;
+  border: 4px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  cursor: pointer;
+  filter: brightness(0.72);
+  transition: filter 0.08s;
+}
+.simon-cell span { pointer-events: none; }
+.simon-cell.s-pink { background: #ff7eb6; }
+.simon-cell.s-red { background: #ff4d5d; }
+.simon-cell.s-purple { background: #b48cff; }
+.simon-cell.s-gold { background: #ffd166; }
+.simon-cell.lit { filter: brightness(1.5); }
+
+/* ------- Access denied ------- */
+.denied { padding: 18px; text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.denied .denied-icon { font-size: 44px; }
+.denied .denied-title { font-family: 'Press Start 2P', monospace; font-size: 16px; color: #a00; }
+.checks { text-align: left; display: inline-block; font-size: 12px; line-height: 1.8; }
+.checks .ok { color: #0a7a0a; }
+.checks .no { color: #a33; }
+
+/* ------- Window shake (used on errors / broken hearts) ------- */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.shake { animation: shake 0.3s linear; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   EOF games.css
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

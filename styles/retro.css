@@ -1,0 +1,234 @@
+/* ============ LOVE OS XP - retro base ============ */
+
+:root {
+  --xp-blue-dark: #0058e6;
+  --xp-blue-light: #2990ff;
+  --xp-title: linear-gradient(90deg, #0055e0 0%, #2990ff 100%);
+  --xp-bg: #3a6ea5;
+  --win-bg: #ece9d8;
+  --bevel-light: #ffffff;
+  --bevel-mid: #d4d0c8;
+  --bevel-dark: #808080;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+body {
+  font-family: 'Tahoma', 'MS Sans Serif', 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: #000;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+  cursor: default;
+}
+
+img { image-rendering: pixelated; image-rendering: crisp-edges; }
+
+/* Canvas content inside windows should stay crisp */
+#viewport { image-rendering: auto; }
+
+button { font-family: inherit; font-size: 11px; }
+input, textarea { font-family: inherit; font-size: 11px; }
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: #000;
+}
+
+#scalebox {
+  position: relative;
+  width: 1024px;
+  height: 640px;
+  flex: none;
+}
+
+#viewport {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1024px;
+  height: 640px;
+  background: var(--xp-bg);
+  overflow: hidden;
+  transform-origin: 0 0;
+  box-shadow: 0 0 0 6px #0a0a0a, 0 0 40px rgba(0,0,0,0.8);
+}
+
+#desktopRoot { position: absolute; inset: 0; z-index: 5; }
+#windowLayer { position: absolute; inset: 0; z-index: 10; overflow: hidden; pointer-events: none; }
+#windowLayer .win { pointer-events: auto; }
+#overlayLayer { position: absolute; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; }
+#overlayLayer > .boot-screen,
+#overlayLayer > .dlg-overlay,
+#overlayLayer > .end-screen { pointer-events: auto; }
+
+.xp-font { font-family: 'Press Start 2P', 'Courier New', monospace; }
+
+/* ------- Classic XP buttons ------- */
+.xp-btn {
+  background: var(--win-bg);
+  color: #000;
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+  padding: 4px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 68px;
+}
+
+.xp-btn:hover { background: #f8f6e8; }
+.xp-btn:active {
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  padding: 5px 13px 3px 15px;
+}
+
+.xp-btn.primary { background: #cfe0ff; font-weight: bold; }
+.xp-btn.primary:hover { background: #dce8ff; }
+
+.xp-btn:disabled {
+  color: #8a8a8a;
+  text-shadow: 1px 1px 0 #fff;
+  cursor: default;
+  border-color: var(--bevel-mid) #676767 #676767 var(--bevel-mid);
+  background: var(--win-bg);
+}
+
+.xp-btn:disabled:hover { background: var(--win-bg); }
+.xp-btn:disabled:active { border-color: var(--bevel-mid) #676767 #676767 var(--bevel-mid); padding: 4px 14px; }
+
+.xp-btn:focus-visible,
+.win-btn:focus-visible,
+.mcard:focus-visible,
+.desk-icon:focus-visible,
+.tray-btn:focus-visible,
+.task-item:focus-visible,
+.start-item:focus-visible,
+.quiz-answer:focus-visible,
+.file-row:focus-visible,
+.nav-btn:focus-visible {
+  outline: 1px dotted #000;
+  outline-offset: -1px;
+}
+
+/* ------- Sunken panel ------- */
+.xp-panel {
+  background: #fff;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  overflow: auto;
+}
+
+/* ------- Progress bar (boot) ------- */
+.prog {
+  height: 18px;
+  background: #cfcfcf;
+  border: 2px solid;
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+}
+.prog .fill {
+  height: 100%;
+  width: 0%;
+  background: repeating-linear-gradient(90deg, #2a4bd7 0 8px, #6ea0ff 8px 16px, #3a62e8 16px 24px);
+  background-size: 24px 100%;
+  transition: none;
+  animation: prog-scroll 0.6s linear infinite;
+}
+@keyframes prog-scroll { from { background-position: 0 0; } to { background-position: 24px 0; } }
+
+/* ------- Boot screen ------- */
+.boot-screen {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  color: #00ff7f;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 60px;
+  z-index: 2000;
+}
+.boot-screen .boot-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 26px;
+  color: #fff;
+  margin: 90px auto 24px auto;
+  text-shadow: 2px 2px 0 #7f00ff, -1px -1px 0 #0055ff;
+  letter-spacing: 2px;
+}
+.boot-screen .boot-sub { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #66ff99; margin: 0 auto 40px auto; }
+.boot-rows {
+  margin: 0 auto 18px auto;
+  width: 480px;
+  height: 96px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 15px;
+  color: #7dffab;
+}
+.boot-rows .line { opacity: 0.9; line-height: 1.5; }
+.boot-rows .line.done { color: #b4ffd0; }
+.boot-bar-wrap { width: 480px; margin: 0 auto; }
+.boot-pct {
+  margin: 6px auto 0 auto;
+  width: 480px;
+  text-align: right;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #7dffab;
+}
+.boot-press {
+  margin-top: 28px;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  color: #ffffff;
+  text-align: center;
+}
+
+@keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+.blink { animation: blink 1s steps(1) infinite; }
+
+/* ------- CRT overlay ------- */
+#crtOverlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 99999;
+}
+
+body.crt-on #crtOverlay {
+  opacity: 1;
+  background:
+    repeating-linear-gradient(to bottom, rgba(0,0,0,0.12) 0px, rgba(0,0,0,0.12) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 4px),
+    radial-gradient(ellipse at center, transparent 58%, rgba(0,0,0,0.22) 100%);
+}
+
+body.crt-on #viewport { filter: saturate(1.08) contrast(1.03); }
+
+/* ------- Small utilities ------- */
+.tac { text-align: center; }
+.mt8 { margin-top: 8px; }
+.mb8 { margin-bottom: 8px; }
+.dim { color: #6a6a6a; }
+.bold { font-weight: bold; }
+.grow { flex: 1; }
+
+/* focus trap visibility */
+.v-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

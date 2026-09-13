@@ -1,0 +1,146 @@
+/* ============ LOVE OS XP - window chrome & dialogs ============ */
+
+.win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--win-bg);
+  border: 1px solid #0831d9;
+  box-shadow:
+    inset 1px 1px 0 #ffffff,
+    inset -1px -1px 0 #8a8a8a,
+    4px 4px 0 rgba(0,0,0,0.35);
+  min-width: 180px;
+  min-height: 90px;
+}
+
+.win-open { animation: winIn 0.14s ease-out; }
+@keyframes winIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.win-title {
+  height: 24px;
+  flex: none;
+  background: linear-gradient(90deg, #7e8fd0 0%, #b9c2e6 45%, #7e8fd0 100%);
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  gap: 4px;
+  cursor: default;
+}
+
+/* the focused window gets the proper loud XP blue title */
+.win-active .win-title {
+  background: linear-gradient(90deg, #0543ce 0%, #2b86f5 55%, #0543ce 100%);
+}
+
+.win-title-text {
+  flex: 1;
+  color: #2b2b3a;
+  font-weight: bold;
+  font-size: 11px;
+  text-shadow: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 4px;
+}
+.win-active .win-title-text {
+  color: #fff;
+  text-shadow: 1px 1px 0 #0d3c9e;
+}
+
+.win-icon { font-size: 12px; line-height: 1; color: #2b2b3a; filter: drop-shadow(1px 1px 0 rgba(255,255,255,0.35)); }
+.win-active .win-icon { color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,0.4); filter: none; }
+
+.win-buttons { display: flex; height: 100%; }
+
+.win-btn {
+  width: 22px;
+  height: 19px;
+  margin: 2px 2px 0 0;
+  background: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.win-btn:active {
+  border-color: var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+}
+.win-btn.glyph-min { font-size: 10px; padding-bottom: 2px; }
+.win-btn.glyph-max { font-size: 8px; }
+.win-btn.glyph-close { font-size: 11px; }
+.win-btn.win-btn-disable { color: #8a8a8a; }
+
+.win-body {
+  flex: 1;
+  background: var(--win-bg);
+  position: relative;
+  overflow: auto;
+  outline: none;
+}
+
+.win.dlg-win .win-body { overflow: hidden; }
+
+/* ------- Dialog overlay / message boxes ------- */
+.dlg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 45, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.dlg-win { position: relative; }
+
+.dlg-body { display: flex; flex-direction: column; padding: 16px 14px 12px; }
+
+.dlg-msg {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 11px;
+  line-height: 1.5;
+  flex: 1;
+  margin-bottom: 14px;
+}
+.dlg-msg .dlg-icon { font-size: 30px; line-height: 1; flex: none; }
+
+.dlg-buttons { display: flex; justify-content: center; gap: 10px; margin-top: 2px; }
+.dlg-buttons .xp-btn { min-width: 80px; }
+
+/* error box red tint */
+.dlg-win.error .dlg-msg { color: #900; }
+
+/* ------- Menus inside windows ------- */
+.win-menu {
+  display: flex;
+  gap: 2px;
+  padding: 2px 4px;
+  background: var(--win-bg);
+  border-bottom: 1px solid var(--bevel-mid);
+  font-size: 11px;
+}
+.win-menu button {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #000;
+}
+.win-menu button:hover { background: #0a2f9e; color: #fff; }
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+   EOF windows.css
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
