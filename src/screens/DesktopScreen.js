@@ -24,7 +24,41 @@ LOVE.DesktopScreen = class DesktopScreen {
     };
 
     this.applyWallpaper();
+    this.birthdayCelebrate();
     this.game.audio.click();
+  }
+
+  /* sprinkles the birthday celebration over the desktop (once per session) */
+  birthdayCelebrate() {
+    var b = LOVE.config.birthday;
+    if (!b || !b.enabled) return;
+    if (this._celebrated) return;
+    this._celebrated = true;
+    var self = this;
+
+    LOVE.FX.floatingHearts(this.desktop.elems.desk, 8);
+
+    // dismissable banner pinned to the top center
+    var banner = LOVE.util.el('button', {
+      class: 'bday-banner',
+      'aria-label': 'birthday cake',
+      title: 'happy birthday!'
+    });
+    banner.appendChild(LOVE.util.el('span', { class: 'bday-cake', 'aria-hidden': 'true' }, '🎂'));
+    var text = LOVE.util.el('span', { class: 'bday-text' });
+    text.textContent = LOVE.util.fill(b.banner, { name: LOVE.config.girlfriendName, age: b.age });
+    banner.appendChild(text);
+    banner.addEventListener('click', function () {
+      if (banner.parentNode) banner.parentNode.removeChild(banner);
+      self.game.audio.birthday();
+      LOVE.Dialog.info('Birthday Cake', LOVE.util.fill(b.cakeDialog, { name: LOVE.config.girlfriendName, age: b.age }), '🎂');
+    });
+    // gentle delay so the boot -> desktop handoff doesn't feel rushed
+    setTimeout(function () {
+      if (!self.root.contains(banner)) self.root.appendChild(banner);
+    }, 350);
+    // burst of confetti right as the desktop appears
+    setTimeout(function () { LOVE.FX.confetti(self.root, 30); }, 500);
   }
 
   /* paint Asoo's drawing (if she set one) as the desktop background */
@@ -53,6 +87,11 @@ LOVE.DesktopScreen = class DesktopScreen {
 
     // intro dialogue, line by line
     var chain = Promise.resolve();
+    if (cfg.birthday && cfg.birthday.enabled) {
+      chain = chain.then(function () {
+        return LOVE.Dialog.info('SYSTEM', LOVE.util.fill(cfg.birthday.cakeDialog, { name: cfg.girlfriendName, age: cfg.birthday.age }), '🎂');
+      });
+    }
     cfg.introLines.forEach(function (line) {
       chain = chain.then(function () {
         return LOVE.Dialog.info('SYSTEM', line, '🤖');

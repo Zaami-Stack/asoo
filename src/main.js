@@ -149,7 +149,8 @@ LOVE.Game = class Game {
       arcade: function () { self.openGameRoom(); },
       paint: function () { self.openPaint(); },
       gallery: function () { self.openGallery(); },
-      calc: function () { self.openCalculator(); }
+      calc: function () { self.openCalculator(); },
+      cake: function () { self.openCake(); }
     };
     if (routes[ic.id]) routes[ic.id]();
   }
@@ -176,7 +177,8 @@ LOVE.Game = class Game {
       lovesweeper: function () { self.launchLoveSweeper(); },
       paint: function () { self.openPaint(); },
       gallery: function () { self.openGallery(); },
-      calc: function () { self.openCalculator(); }
+      calc: function () { self.openCalculator(); },
+      cake: function () { self.openCake(); }
     };
     if (map[id]) map[id]();
   }
@@ -324,6 +326,22 @@ LOVE.Game = class Game {
     });
     win.open();
     new LOVE.CalculatorApp(win, this);
+  }
+
+  /* the birthday surprise - a cake with candles (and a wish) */
+  openCake() {
+    var b = LOVE.config.birthday || {};
+    this.audio.birthday();
+    LOVE.Dialog.open({
+      title: 'Birthday Cake',
+      icon: '🎂',
+      message: b.enabled
+        ? LOVE.util.fill(b.cakeDialog, { name: LOVE.config.girlfriendName, age: b.age })
+        : 'A perfectly good cake for no particular reason at all.',
+      buttons: [{ label: 'Make a wish', value: 'ok', primary: true }]
+    }).then(function () {
+      if (LOVE.game) LOVE.game.audio.success();
+    });
   }
 
   /* set (or clear) Asoo's own artwork as the desktop wallpaper */
@@ -616,10 +634,12 @@ LOVE.Game = class Game {
   }
 
   showAbout() {
+    var b = LOVE.config.birthday;
+    var edition = (b && b.enabled) ? ('\n' + b.osTitle) : '';
     LOVE.Dialog.open({
       title: 'About LoveOS XP',
       icon: '🖥️',
-      message: 'LoveOS XP\nVersion LOVE.2001\n\nA pretend-operating-system, secretly\nmade for one person in the world.\n\nThis copy is licensed to: ' + LOVE.config.girlfriendName + '\n\nNo computers were emotionally harmed.',
+      message: 'LoveOS XP\nVersion LOVE.2001' + edition + '\n\nA pretend-operating-system, secretly\nmade for one person in the world.\n\nThis copy is licensed to: ' + LOVE.config.girlfriendName + '\n\nNo computers were emotionally harmed.',
       buttons: [{ label: 'OK', value: 'ok', primary: true }]
     });
   }

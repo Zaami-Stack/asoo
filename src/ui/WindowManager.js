@@ -11,6 +11,7 @@ LOVE.WindowManager = class WindowManager {
     this.nextZ = 50;
     this.onChange = null;          // callback(list of windows)
     this.singletons = {};          // map id -> Window for one-at-a-time apps
+    this.top = null;               // currently focused window
   }
 
   scale() {
@@ -62,12 +63,23 @@ LOVE.WindowManager = class WindowManager {
     for (i = 0; i < this.windows.length; i++) {
       this.windows[i].el.classList.toggle('win-active', this.windows[i] === win);
     }
+    // only refresh the taskbar when the focused window actually changed
+    if (this.top !== win) {
+      this.top = win;
+      this.emit();
+    }
+  }
+
+  /* the window currently on top (null if none) */
+  topWindow() {
+    return this.top;
   }
 
   close(win) {
     var idx = this.windows.indexOf(win);
     if (idx === -1) return;
     this.windows.splice(idx, 1);
+    if (this.top === win) this.top = this.windows[this.windows.length - 1] || null;
     if (win.el.parentNode) win.el.parentNode.removeChild(win.el);
     this.emit();
   }

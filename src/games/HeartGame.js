@@ -25,6 +25,9 @@ LOVE.HeartGame = class HeartGame {
     this.hearts = [];
     this.lastTs = 0;
     this.pointerActive = false;
+    this.bursts = [];
+    this.floats = [];
+    this.combo = 0;
 
     this.build();
     this.bind();
@@ -38,6 +41,8 @@ LOVE.HeartGame = class HeartGame {
     this.elems = {};
     this.elems.target = LOVE.util.el('span', {}, 'HEARTS: 0 / 15');
     hud.appendChild(this.elems.target);
+    this.elems.combo = LOVE.util.el('span', { class: 'combo', style: 'display:none;' }, '');
+    hud.appendChild(this.elems.combo);
     this.elems.lives = LOVE.util.el('span', { class: 'lives' }, '❤️❤️❤️');
     hud.appendChild(this.elems.lives);
     win.body.appendChild(hud);
@@ -128,6 +133,22 @@ LOVE.HeartGame = class HeartGame {
   update(dt) {
     if (this.over) return;
 
+    // age the effect particles
+    var b;
+    for (b = this.bursts.length - 1; b >= 0; b--) {
+      var p = this.bursts[b];
+      p.life -= dt;
+      if (p.life <= 0) { this.bursts.splice(b, 1); continue; }
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 240 * dt;
+    }
+    for (var f = this.floats.length - 1; f >= 0; f--) {
+      this.floats[f].life -= dt;
+      this.floats[f].y -= 26 * dt;
+      if (this.floats[f].life <= 0) this.floats.splice(f, 1);
+    }
+
     // spawn timer
     this.spawnTimer -= dt;
     if (this.spawnTimer <= 0) {
@@ -181,10 +202,25 @@ LOVE.HeartGame = class HeartGame {
 
   gainHeart() {
     this.game.audio.catchHeart();
+    this.game.audio.pop();
     this.score += 1;
     this.stateData.heartCatchTotal += 1;
     this.game.state.updateUnlocks();
     this.elems.target.textContent = 'HEARTS: ' + Math.min(this.score, 15) + ' / 15';
+    this.burst(this.playerX, this.playerY - 24, '#ff5d8f');
+    this.floats.push({ x: this.playerX, y: this.playerY - 40, text: '+1', life: 0.7, max: 0.7 });
+    this.combo += 1;
+    this.comboTimer = 2.2;
+
+    // love-message milestones for combos
+    if (this.combo > 1 && this.combo % 6 === 0) {
+      var loveMsgs = ['Swoon!', 'Be Mine!', 'TRUE LOVE', 'Soulmates', 'Eternally'];
+      var pick = loveMsgs[(Math.floor(this.combo / 6) - 1) % loveMsgs.length];
+      this.burst(this.W / 2, this.H - 60, '#ffd24d');
+      this.floats.push({ x: this.W / 2, y: this.H - 70, text: 'x' + this.combo + ' ' + pick, big: true, life: 1.4, max: 1.4 });
+      this.game.audio.pop();
+    }
+
     this.game.save();
     this.game.desktopScreen.refresh();
 
@@ -193,9 +229,26 @@ LOVE.HeartGame = class HeartGame {
     }
   }
 
+  /* little confetti burst of particles */
+  burst(x, y, color) {
+    var i;
+    for (i = 0; i < 8; i++) {
+      var a = LOVE.util.random(0, Math.PI * 2);
+      var sp = LOVE.util.random(40, 130);
+      this.bursts.push({
+        x: x, y: y,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40,
+        life: LOVE.util.random(0.35, 0.6), max: 0.6,
+        r: LOVE.util.random(2, 4), color: color
+      });
+    }
+  }
+
   loseLife() {
     this.game.audio.brokenHeart();
     this.win.shake();
+    this.burst(this.playerX, this.playerY - 24, '#5a6070');
+    this.floats.push({ x: this.playerX, y: this.playerY - 40, text: '-Oops', life: 0.8, max: 0.8 });
     this.lives -= 1;
     this.elems.lives.textContent = '❤️'.repeat(Math.max(0, this.lives)) + '🖤'.repeat(Math.max(0, 3 - this.lives));
     if (this.lives <= 0) {
@@ -232,6 +285,8 @@ LOVE.HeartGame = class HeartGame {
       self.score = 0;
       self.lives = 3;
       self.hearts = [];
+      self.bursts = [];
+      self.floats = [];
       self.spawnTimer = 0.4;
       self.pointerActive = false;
       self.targetX = null;
@@ -270,6 +325,8 @@ LOVE.HeartGame = class HeartGame {
       self.game.audio.click();
       self.score = 0;
       self.hearts = [];
+      self.bursts = [];
+      self.floats = [];
       self.spawnTimer = 0.4;
       self.over = false;
       self.won = false;
@@ -318,6 +375,31 @@ LOVE.HeartGame = class HeartGame {
         LOVE.util.pixelHeart(ctx, hh.x, hh.y, 1.0, '#e02058');
       }
     });
+
+    // catch particles
+    this.bursts.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life / p.max);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // floating score text
+    this.floats.forEach(function (ft) {
+      var a = Math.max(0, ft.life / ft.max);
+      ctx.globalAlpha = a;
+      ctx.font = 'bold 13px Tahoma, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#fff';
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+      ctx.lineWidth = 3;
+      ctx.strokeText(ft.text, ft.x, ft.y);
+      ctx.fillText(ft.text, ft.x, ft.y);
+    });
+    ctx.globalAlpha = 1;
+    ctx.textAlign = 'left';
 
     // player basket
     var px = this.playerX, py = this.playerY;

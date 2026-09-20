@@ -41,14 +41,22 @@ LOVE.Desktop = class Desktop {
     oldIcons.forEach(function (o) { o.parentNode.removeChild(o); });
     this.icons = {};
 
-    var conf = LOVE.config.desktopIcons;
-    var colX = [10, 96];
+    var bday = LOVE.config.birthday && LOVE.config.birthday.enabled;
+    var conf = LOVE.config.desktopIcons.filter(function (ic) {
+      // birthday-only icons vanish when the celebration is turned off
+      return !(ic.type === 'birthday' && !bday);
+    });
+
+    // columns of 5 so any number of icons lays out without overlapping
+    var PER_COL = 5;
+    var X0 = 10;
+    var XGAP = 86;
     conf.forEach(function (ic, i) {
-      var col = Math.floor(i / 5);
-      var row = i % 5;
+      var col = Math.floor(i / PER_COL);
+      var row = i % PER_COL;
       var el = LOVE.util.el('button', {
         class: 'desk-icon',
-        style: 'left:' + colX[col % 2] + 'px;top:' + (8 + row * 92) + 'px;',
+        style: 'left:' + (X0 + col * XGAP) + 'px;top:' + (8 + row * 92) + 'px;',
         'aria-label': ic.label
       });
       el.appendChild(LOVE.util.el('span', { class: 'icon-img', 'aria-hidden': 'true' }, ic.icon));

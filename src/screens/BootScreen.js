@@ -19,7 +19,8 @@ LOVE.BootScreen = class BootScreen {
     opts = opts || {};
 
     var screen = LOVE.util.el('div', { class: 'boot-screen', 'aria-label': 'boot sequence' });
-    var title = LOVE.util.el('div', { class: 'boot-title' }, 'WINDOWS LOVE EDITION');
+    var bday = LOVE.config.birthday && LOVE.config.birthday.enabled;
+    var title = LOVE.util.el('div', { class: 'boot-title' }, bday ? LOVE.config.birthday.osTitle : 'WINDOWS LOVE EDITION');
     var sub = LOVE.util.el('div', { class: 'boot-sub' }, LOVE.config.osName + ' - built with love.dll');
     var rows = LOVE.util.el('div', { class: 'boot-rows' });
     var barWrap = LOVE.util.el('div', { class: 'boot-bar-wrap' });
@@ -39,6 +40,9 @@ LOVE.BootScreen = class BootScreen {
     root.appendChild(screen);
 
     var lines = LOVE.config.bootMessages;
+    if (LOVE.config.birthday && LOVE.config.birthday.enabled) {
+      lines = lines.concat([LOVE.config.birthday.bootTag + '... done', 'Happy ' + LOVE.config.birthday.age + 'th birthday, ' + LOVE.config.girlfriendName + '!']);
+    }
     var stops = LOVE.config.bootStops;
     var delay = 420;
     var i = 0;
@@ -59,8 +63,9 @@ LOVE.BootScreen = class BootScreen {
       cursorEl = line;
       // add blinking ">" cursor at end
       line.appendChild(LOVE.util.el('span', { class: 'blink' }, ' >'));
-      fill.style.width = stops[i] + '%';
-      pct.textContent = stops[i] + '%';
+      var p = Math.min(100, stops[i] || (i === lines.length - 1 ? 100 : 50));
+      fill.style.width = p + '%';
+      pct.textContent = p + '%';
       i += 1;
       setTimeout(stepLine, delay);
     }

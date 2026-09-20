@@ -38,8 +38,7 @@ LOVE.AudioManager = class AudioManager {
     LOVE.AudioManager._note = map;
     return map;
   }
-
-  /* turn a note name into a frequency. 0 for rests. */
+  
   noteToFreq(n) {
     if (n == null) return 0;
     if (n === 'R' || n === '0' || n === '-') return 0;
@@ -151,6 +150,22 @@ LOVE.AudioManager = class AudioManager {
     var seq = [392, 523, 659, 784, 1047];
     seq.forEach(function (f, i) { this.tone(f, 0.22, { gain: 0.18, when: i * 0.13 }); }, this);
     this.tone(1319, 0.4, { gain: 0.12, when: 0.66 });
+  }
+
+  /* birthday fanfare - the cake is her present */
+  birthday() {
+    if (!this.ensure()) return;
+    [523, 659, 784, 1047, 1319].forEach(function (f, i) {
+      this.tone(f, 0.16, { gain: 0.15, when: i * 0.08 });
+    }, this);
+    this.tone(1568, 0.5, { gain: 0.09, when: 0.45 });
+  }
+
+  /* tiny pop - confetti, bubbles, heart bursts */
+  pop() {
+    if (!this.ensure()) return;
+    this.tone(680, 0.06, { gain: 0.13 });
+    this.tone(1180, 0.05, { gain: 0.09, when: 0.03 });
   }
 
   startup() {

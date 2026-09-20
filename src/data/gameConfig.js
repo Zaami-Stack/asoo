@@ -84,14 +84,17 @@ LOVE.util = {
     };
   },
 
+  /* substitute {name} / {age} tokens in personal strings */
+  fill: function (text, extra) {
+    var b = LOVE.config.birthday || {};
+    var name = extra && extra.name != null ? extra.name : LOVE.config.girlfriendName;
+    var age = extra && extra.age != null ? extra.age : (b.age || '');
+    return String(text).replace(/\{name\}/g, name).replace(/\{age\}/g, age);
+  },
+
   /* pixel-art heart drawn on a canvas context */
   pixelHeart: function (ctx, cx, cy, scale, color) {
-    // simple 7x7-ish pixel heart
     var s = scale;
-    var px = [
-      [0,1,2,3,3,2,1,0].map(function(x){return x;}), // placeholder to keep it simple
-    ];
-    // draw with arcs so it reads as a heart at small size
     ctx.save();
     ctx.fillStyle = color || '#e02058';
     ctx.beginPath();
@@ -110,6 +113,23 @@ LOVE.util = {
 LOVE.config = {
   osName: 'LoveOS XP',
   girlfriendName: 'Asoo',
+
+  /* ---------- 0. Birthday celebration ----------
+     Turning this on sprinkles a birthday surprise through the OS:
+     an edition title on boot, a cake on the desktop, confetti,
+     a taskbar cake badge on the big day, a fanfare, and a
+     personalized ending line. Set enabled: false to turn it off. */
+  birthday: {
+    enabled: true,
+    age: 18,
+    date: [9, 18],          // [month, day] - shows a 🎂 in the clock
+    osTitle: 'LOVE OS XP - 18th Birthday Edition',
+    bootTag: 'loading birthday cake',
+    banner: 'It\u0027s {name}\u0027s {age}th birthday - tap the cake!',
+    cakeDialog: 'One cake for the birthday girl. {age} candles, all for you.\n\nMake a wish... \u2728',
+    endingLine: 'Happy {age}th birthday, {name}. This OS now legally runs on real, adult hardware.',
+    desktopIcon: true
+  },
 
   /* ---------- 1. Boot screen ---------- */
   bootMessages: [
@@ -166,7 +186,8 @@ LOVE.config = {
     { id: 'arcade', label: 'Love Arcade', icon: '\u{1F3AE}', type: 'app' },
     { id: 'paint', label: 'Paint', icon: '\u{1F3A8}', type: 'app' },
     { id: 'gallery', label: 'Gallery', icon: '\u{1F5BC}\uFE0F', type: 'app' },
-    { id: 'calc', label: 'Calculator', icon: '\u{1F9EE}', type: 'app' }
+    { id: 'calc', label: 'Calculator', icon: '\u{1F9EE}', type: 'app' },
+    { id: 'cake', label: 'Birthday Cake', icon: '\u{1F382}', type: 'birthday' }
   ],
 
   recycleMessages: [
@@ -347,6 +368,17 @@ LOVE.config = {
              'D5', 'C5', 'D5', 'E5', 'G5', 'E5', 'C5', 'D5',
              'E5', 'D5', 'C5', 'G4', 'C5', 'E5', 'R', 'R'],
       bass: ['C3', 'C3', 'G2', 'G2', 'A2', 'A2', 'F2', 'C3']
+    },
+    {
+      title: 'Happy Birthday (18)',
+      artist: 'the cake daemon',
+      about: 'the only song that matters today',
+      tempo: 250,
+      tune: ['G4', 'G4', 'A4', 'G4', 'C5', 'B4', 'R', 'R',
+             'G4', 'G4', 'A4', 'G4', 'D5', 'C5', 'R', 'R',
+             'G4', 'G4', 'G5', 'E5', 'C5', 'B4', 'A4', 'R',
+             'F5', 'F5', 'E5', 'C5', 'D5', 'C5', 'R', 'R'],
+      bass: ['C3', 'C3', 'F2', 'F2', 'C3', 'C3', 'G2', 'C3']
     }
   ],
 

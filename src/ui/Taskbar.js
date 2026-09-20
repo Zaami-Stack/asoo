@@ -73,7 +73,14 @@ LOVE.Taskbar = class Taskbar {
     this.elems.pieces = piecesEl;
 
     var clock = LOVE.util.el('div', { class: 'clock', title: 'let the clock be a love clock' }, '--:--');
-    clock.addEventListener('click', function () { game.eggClicked('clock'); });
+    clock.addEventListener('click', function () {
+      if (self.isBirthday()) {
+        game.audio.birthday();
+        LOVE.Dialog.info('Birthday', 'It\u0027s the {age}th birthday today - the clock is legally required to celebrate.'.replace('{age}', (LOVE.config.birthday || {}).age || ''), '🎂');
+        return;
+      }
+      game.eggClicked('clock');
+    });
     tray.appendChild(clock);
     this.elems.clock = clock;
 
@@ -135,6 +142,10 @@ LOVE.Taskbar = class Taskbar {
       { col: 'b', id: 'reset', label: 'Reset Progress', icon: '🗑️' }
     ];
 
+    if (LOVE.config.birthday && LOVE.config.birthday.enabled) {
+      items.push({ col: 'a', id: 'cake', label: 'Birthday Cake', icon: '🎂' });
+    }
+
     var self = this;
     items.forEach(function (it) {
       var host = it.col === 'b' ? colB : colA;
@@ -174,11 +185,12 @@ LOVE.Taskbar = class Taskbar {
     var self = this;
     var wrap = this.elems.tasks;
     wrap.innerHTML = '';
+    var active = game.wm.topWindow();
     windows.forEach(function (w) {
       var btn = LOVE.util.el('button', { class: 'task-item', role: 'button' });
       btn.appendChild(LOVE.util.el('span', { class: 't-icon', 'aria-hidden': 'true' }, w.icon));
       btn.appendChild(document.createTextNode(w.title));
-      btn.classList.add('active');
+      btn.classList.toggle('active', w === active);
       btn.addEventListener('click', function () {
         game.audio.click();
         if (w.isMinimized) game.wm.restore(w);
@@ -196,6 +208,14 @@ LOVE.Taskbar = class Taskbar {
   setMusicIcon(on) { this.elems.musicBtn.textContent = on ? '🔊' : '🔇'; }
   setRetroIcon(on) { this.elems.retroBtn.textContent = on ? '◑' : '○'; }
 
+  /* true when today matches the configured birthday date */
+  isBirthday() {
+    var b = LOVE.config.birthday;
+    if (!b || !b.enabled || !Array.isArray(b.date)) return false;
+    var d = new Date();
+    return d.getMonth() + 1 === b.date[0] && d.getDate() === b.date[1];
+  }
+
   refreshPieces() {
     var n = this.game.state.data.pieces.reduce(function (a, b) { return a + (b ? 1 : 0); }, 0);
     this.elems.pieces.textContent = '♥ ' + n + '/5';
@@ -205,7 +225,7 @@ LOVE.Taskbar = class Taskbar {
     var d = new Date();
     var hh = ('0' + d.getHours()).slice(-2);
     var mm = ('0' + d.getMinutes()).slice(-2);
-    this.elems.clock.textContent = hh + ':' + mm;
+    this.elems.clock.textContent = (this.isBirthday() ? '🎂 ' : '') + hh + ':' + mm;
   }
 };
 
