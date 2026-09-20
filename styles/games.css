@@ -265,7 +265,7 @@
 .heart-fall {
   position: absolute;
   top: -40px;
-  z-index: 2500;
+  z-index: 3500;
   pointer-events: none;
   animation: fall linear forwards;
   font-size: 18px;

@@ -180,6 +180,15 @@ LOVE.PaintApp = class PaintApp {
 
   paintAt(x, y) {
     var ctx = this.ctx;
+    if (this.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(0,0,0,1)';
+      ctx.beginPath();
+      ctx.arc(x, y, this.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      return;
+    }
     ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(x, y, 1, 0, Math.PI * 2);

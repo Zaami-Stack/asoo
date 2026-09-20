@@ -39,7 +39,7 @@ LOVE.HeartGame = class HeartGame {
 
     var hud = LOVE.util.el('div', { class: 'hud' });
     this.elems = {};
-    this.elems.target = LOVE.util.el('span', {}, 'HEARTS: 0 / 15');
+    this.elems.target = LOVE.util.el('span', {}, 'HEARTS: 0 / ' + LOVE.config.heartsTarget);
     hud.appendChild(this.elems.target);
     this.elems.combo = LOVE.util.el('span', { class: 'combo', style: 'display:none;' }, '');
     hud.appendChild(this.elems.combo);
@@ -206,7 +206,7 @@ LOVE.HeartGame = class HeartGame {
     this.score += 1;
     this.stateData.heartCatchTotal += 1;
     this.game.state.updateUnlocks();
-    this.elems.target.textContent = 'HEARTS: ' + Math.min(this.score, 15) + ' / 15';
+    this.elems.target.textContent = 'HEARTS: ' + Math.min(this.score, LOVE.config.heartsTarget) + ' / ' + LOVE.config.heartsTarget;
     this.burst(this.playerX, this.playerY - 24, '#ff5d8f');
     this.floats.push({ x: this.playerX, y: this.playerY - 40, text: '+1', life: 0.7, max: 0.7 });
     this.combo += 1;
@@ -291,7 +291,9 @@ LOVE.HeartGame = class HeartGame {
       self.pointerActive = false;
       self.targetX = null;
       self.over = false;
-      self.elems.target.textContent = 'HEARTS: 0 / 15';
+      self.combo = 0;
+      self.comboTimer = 0;
+      self.elems.target.textContent = 'HEARTS: 0 / ' + LOVE.config.heartsTarget;
       self.elems.lives.textContent = '❤️❤️❤️';
       box.style.display = 'none';
     });
@@ -333,7 +335,9 @@ LOVE.HeartGame = class HeartGame {
       self.lives = 3;
       self.pointerActive = false;
       self.targetX = null;
-      self.elems.target.textContent = 'HEARTS: 0 / 15';
+      self.combo = 0;
+      self.comboTimer = 0;
+      self.elems.target.textContent = 'HEARTS: 0 / ' + LOVE.config.heartsTarget;
       self.elems.lives.textContent = '❤️❤️❤️';
       box.style.display = 'none';
     });

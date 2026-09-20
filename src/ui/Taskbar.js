@@ -169,6 +169,15 @@ LOVE.Taskbar = class Taskbar {
     this.elems.bar.appendChild(menu);
     this.startMenu = menu;
     this.startOpen = true;
+
+    var self2 = this;
+    this.outsideClose = function (e) {
+      if (!self2.startOpen) return;
+      if (self2.startMenu && self2.startMenu.contains(e.target)) return;
+      if (self2.elems.startBtn && self2.elems.startBtn.contains(e.target)) return;
+      self2.closeStart();
+    };
+    document.addEventListener('pointerdown', this.outsideClose);
   }
 
   closeStart() {
@@ -177,6 +186,10 @@ LOVE.Taskbar = class Taskbar {
     }
     this.startMenu = null;
     this.startOpen = false;
+    if (this.outsideClose) {
+      document.removeEventListener('pointerdown', this.outsideClose);
+      this.outsideClose = null;
+    }
   }
 
   /* reflect the open-window list as task buttons */

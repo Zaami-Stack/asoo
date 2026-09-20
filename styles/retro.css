@@ -166,15 +166,15 @@ input, textarea { font-family: inherit; font-size: 11px; }
   font-family: 'Press Start 2P', monospace;
   font-size: 26px;
   color: #fff;
-  margin: 90px auto 24px auto;
+  margin: 36px auto 16px auto;
+  text-align: center;
   text-shadow: 2px 2px 0 #7f00ff, -1px -1px 0 #0055ff;
   letter-spacing: 2px;
 }
-.boot-screen .boot-sub { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #66ff99; margin: 0 auto 40px auto; }
+.boot-screen .boot-sub { font-family: 'Press Start 2P', monospace; font-size: 9px; color: #66ff99; margin: 0 auto 20px auto; }
 .boot-rows {
-  margin: 0 auto 18px auto;
+  margin: 0 auto 14px auto;
   width: 480px;
-  height: 96px;
   font-family: 'Courier New', monospace;
   font-weight: bold;
   font-size: 15px;
@@ -194,9 +194,18 @@ input, textarea { font-family: inherit; font-size: 11px; }
 .boot-press {
   margin-top: 28px;
   font-family: 'Courier New', monospace;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: bold;
   color: #ffffff;
   text-align: center;
+  text-shadow: 0 0 8px rgba(0, 255, 179, 0.9);
+}
+.boot-press.blink {
+  animation: press-blink 1.2s ease-in-out infinite;
+}
+@keyframes press-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
 }
 
 @keyframes blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }

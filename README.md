@@ -29,7 +29,7 @@ No build step. No install. Just open `index.html`.
 4. **Love Arcade** (desktop icon, Start menu, or LOVE.EXE) — five bonus games:
    Asoo Pong, Heart Snake, Whack-a-Love, Asoo Says and Heartfield
    (minesweeper with hearts). Wins are saved.
-5. **Music Player** — 7 built-in chiptune songs (melody + bass), all composed
+5. **Music Player** — 8 built-in chiptune songs (melody + bass), all composed
    about her. Pick a track, hit play, advance, or skip.
 6. **Tools** — **Paint** (draw with pencil/eraser, 12 colors, 4 brush sizes,
    name + save into the **Gallery**, or set a drawing as the desktop wallpaper),

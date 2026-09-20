@@ -60,7 +60,7 @@ LOVE.MainMenu = {
       name: 'Memory Game', icon: '🃏',
       desc: d.memoryGameCompleted ? 'you remembered everything' : 'match the pairs',
       locked: !s.isMemoryUnlocked(),
-      lockedNote: 'catch 15 hearts first',
+      lockedNote: 'catch ' + cfg.heartsTarget + ' hearts first',
       action: function () { game.launchMemory(); }
     }));
 
@@ -108,7 +108,7 @@ LOVE.MainMenu = {
 
     row.appendChild(makeBtn({
       name: 'Love Arcade', icon: '🎮',
-      desc: 'four tiny games, all for you',
+      desc: 'five tiny games, all for you',
       action: function () { game.openGameRoom(); }
     }));
 

@@ -46,7 +46,6 @@ LOVE.BootScreen = class BootScreen {
     var stops = LOVE.config.bootStops;
     var delay = 420;
     var i = 0;
-    var cursorEl = null;
 
     function addLine(text, isDone) {
       var line = LOVE.util.el('div', { class: 'line' + (isDone ? ' done' : '') }, text);
@@ -60,10 +59,11 @@ LOVE.BootScreen = class BootScreen {
         return;
       }
       var line = addLine(lines[i]);
-      cursorEl = line;
       // add blinking ">" cursor at end
       line.appendChild(LOVE.util.el('span', { class: 'blink' }, ' >'));
-      var p = Math.min(100, stops[i] || (i === lines.length - 1 ? 100 : 50));
+      // progress never drops: extra birthday lines just hold the last stop
+      var p = i < stops.length ? stops[i] : stops[stops.length - 1];
+      p = Math.min(100, p);
       fill.style.width = p + '%';
       pct.textContent = p + '%';
       i += 1;
@@ -72,11 +72,10 @@ LOVE.BootScreen = class BootScreen {
 
     function finishProgress() {
       setTimeout(function () {
-        var cursor = (rows.lastChild && rows.lastChild.querySelector('.blink')) || null;
-        if (cursor) cursor.remove();
+        var cursors = rows.querySelectorAll('.blink');
+        for (var ci = 0; ci < cursors.length; ci++) cursors[ci].remove();
         fill.style.width = '100%';
         pct.textContent = '100%';
-        if (cursorEl) { var c = cursorEl.querySelector('.blink'); if (c) c.remove(); }
         goToContinue();
       }, 400);
     }

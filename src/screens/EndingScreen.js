@@ -63,7 +63,13 @@ LOVE.Ending = {
     panel.appendChild(status);
 
     var msgWrap = LOVE.util.el('div', { style: 'margin-top:14px;max-height:230px;overflow:auto;' });
+    var punch = document.createElement('div');
+    punch.style.fontWeight = 'bold';
+    punch.style.fontSize = '14px';
+    punch.style.color = '#c00050';
+    punch.style.marginBottom = '6px';
     var msg = LOVE.util.el('div', { class: 'end-msg' });
+    msgWrap.appendChild(punch);
     msgWrap.appendChild(msg);
     panel.appendChild(msgWrap);
 
@@ -74,12 +80,7 @@ LOVE.Ending = {
     var fullText = LOVE.config.finalMessage.join('\n');
 
     setTimeout(function () {
-      var punch = document.createElement('div');
-      punch.style.fontWeight = 'bold';
-      punch.style.fontSize = '14px';
-      punch.style.color = '#c00050';
-      punch.textContent = 'System functioning perfectly.' + '\n';
-      msg.appendChild(punch);
+      punch.textContent = 'System functioning perfectly.';
     }, 1600);
 
     var typerStarted = false;

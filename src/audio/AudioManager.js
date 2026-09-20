@@ -199,6 +199,7 @@ LOVE.AudioManager = class AudioManager {
 
   /* start the music interval for the current song. safe to call repeatedly. */
   startMusic() {
+    if (!this.musicOn) return false;
     if (!this.ensure()) return false;
     if (this.musicTimer) return true;
     var song = this.currentSong();

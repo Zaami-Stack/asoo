@@ -260,6 +260,60 @@
 /* desktop back covers taskbar area too */
 .taskbar .sizer { display: none; }
 
+/* ------- Birthday celebration effects ------- */
+.fx-confetti {
+  position: absolute;
+  top: -40px;
+  z-index: 50;
+  pointer-events: none;
+  animation-name: fx-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.fx-heart {
+  position: absolute;
+  bottom: -30px;
+  z-index: 2;
+  pointer-events: none;
+  animation-name: fx-float;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+@keyframes fx-fall {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(700px) rotate(40deg); }
+}
+@keyframes fx-float {
+  0% { transform: translateY(0); opacity: 0; }
+  12% { opacity: 0.9; }
+  88% { opacity: 0.9; }
+  100% { transform: translateY(-690px); opacity: 0; }
+}
+
+/* birthday banner pinned to the top center of the desktop */
+.bday-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(#5ce0a0 0%, #2fb876 100%);
+  border: 2px solid;
+  border-color: #c8ffdf #1e7a4a #1e7a4a #c8ffdf;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.35);
+}
+.bday-banner .bday-cake { font-size: 18px; line-height: 1; }
+.bday-banner:hover { filter: brightness(1.08); }
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
    EOF desktop.css
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

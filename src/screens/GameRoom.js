@@ -1,6 +1,6 @@
 /* =============================================================
    LOVE OS XP - Love Arcade room
-   Four tiny machines of affection. All of them are about one
+   Five tiny machines of affection. All of them are about one
    specific girl, but we do not say her surname.
    ============================================================= */
 
@@ -50,10 +50,15 @@ LOVE.GameRoom = {
       desc: 'best combo: ' + (w.simon || 0) + ' rounds - repeat the hearts',
       action: function () { game.launchSimonLove(); }
     }));
+    row.appendChild(makeBtn({
+      name: 'Heartfield', icon: '🕳️', wins: w.sweeper || 0,
+      desc: 'flowers over broken hearts on a 10x10 field',
+      action: function () { game.launchLoveSweeper(); }
+    }));
 
     wrap.appendChild(row);
 
-    var total = (w.pong || 0) + (w.snake || 0) + (w.whack || 0) + (w.simon || 0);
+    var total = (w.pong || 0) + (w.snake || 0) + (w.whack || 0) + (w.simon || 0) + (w.sweeper || 0);
     var footer = LOVE.util.el('div', { class: 'menu-footer' });
     footer.appendChild(LOVE.util.el('span', {}, 'total arcade victories: ' + total));
     footer.appendChild(LOVE.util.el('span', {}, 'all games secretly feature the same girl'));

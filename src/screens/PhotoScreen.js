@@ -53,7 +53,7 @@ LOVE.PhotoScenes = [
   },
   {
     name: 'moon & me',
-    palette: { M: '#ffe9a8', G: '#3a3a4a', g: '#26262f', H: '#f0f0ff', '.': null },
+    palette: { M: '#ffe9a8', w: '#ffd27a', G: '#3a3a4a', g: '#26262f', H: '#f0f0ff', '_': '#39445c', '.': null },
     rows: [
       '....MMM........',
       '...MMwMM.......',
@@ -179,16 +179,30 @@ LOVE.Photos = {
       }
     };
 
+    var refreshDate = function () {
+      meta.innerHTML = '';
+      meta.appendChild(LOVE.util.el('span', {}, photo.file));
+      meta.appendChild(LOVE.util.el('span', {}, photo.date || ''));
+    };
+
+    // viewing the special photo counts toward... romance
+    var markSpecialViewed = function () {
+      if (photo.file !== 'special_photo.jpg') return;
+      if (game.state.markMemoryViewed('special_photo.jpg')) {
+        game.save();
+        game.desktopScreen.refresh();
+      }
+    };
+
     prevBtn.addEventListener('click', function () {
       game.audio.click();
       i = (i - 1 + photos.length) % photos.length;
       photo = photos[i];
-      meta.textContent = photo.file;
-      var parts = frame.nextElementSibling;
       box.querySelector('.photo-caption').textContent = photo.caption || '';
       counter.textContent = (i + 1) + ' / ' + photos.length;
       loadPic();
       refreshDate();
+      markSpecialViewed();
       game.save();
     });
     nextBtn.addEventListener('click', function () {
@@ -199,24 +213,11 @@ LOVE.Photos = {
       counter.textContent = (i + 1) + ' / ' + photos.length;
       loadPic();
       refreshDate();
+      markSpecialViewed();
       game.save();
     });
 
-    var refreshDate = function () {
-      meta.innerHTML = '';
-      meta.appendChild(LOVE.util.el('span', {}, photo.file));
-      meta.appendChild(LOVE.util.el('span', {}, photo.date || ''));
-    };
-
-    // viewing photos counts toward... romance
-    var d = game.state.data;
-    var before = d.memoriesViewed.indexOf('special_photo.jpg') !== -1;
-    if (!before && photo.file === 'special_photo.jpg') {
-      game.state.markMemoryViewed('special_photo.jpg');
-      game.save();
-      game.desktopScreen.refresh();
-    }
-
+    markSpecialViewed();
     loadPic();
     return box;
   },
